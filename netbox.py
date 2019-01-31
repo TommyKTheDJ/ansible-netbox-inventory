@@ -16,7 +16,7 @@ class NetboxInventory:
         if self.config['debug']:
             logging.basicConfig(filename='netbox_inventory.log', level=logging.DEBUG)
 
-        self.netbox = self.connect_netbox(self.config['url'], self.config['token'])
+        self.netbox = self.connect_netbox(self.config['url'], self.config['token'], self.config['ssl_verify'])
         self.result = {
             "all": {
                 "hosts": []
@@ -39,9 +39,9 @@ class NetboxInventory:
             except yaml.YAMLError as exc:
                 print(exc)
 
-    def connect_netbox(self, url, token):
+    def connect_netbox(self, url, token, ssl_verify):
         try:
-            return pynetbox.api(url, token=token)
+            return pynetbox.api(url, token=token, ssl_verify=ssl_verify)
         except requests.exceptions.ConnectionError:
             sys.exit("Failed to connect to netbox instance")
         except AttributeError:
